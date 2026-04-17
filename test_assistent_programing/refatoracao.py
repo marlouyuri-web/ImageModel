@@ -2,7 +2,7 @@ def calcular_estatisticas(valores):
     if not valores:
         raise ValueError("A lista de valores não pode estar vazia.")
 
-    total = sum(valores)
+    total = len(valores)
     media = total / len(valores)
     maior = max(valores)
     menor = min(valores)
