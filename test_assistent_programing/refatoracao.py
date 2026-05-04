@@ -1,4 +1,27 @@
 def calcular_estatisticas(valores):
+    """
+    Calcula estatísticas básicas de uma lista de valores numéricos.
+
+    Esta função recebe uma lista de números e calcula o total de elementos,
+    a média aritmética, o maior e o menor valor.
+
+    Args:
+        valores (list[float] or list[int]): Lista de valores numéricos para calcular as estatísticas.
+
+    Returns:
+        tuple: Uma tupla contendo (total, media, maior, menor), onde:
+            - total (int): Número total de elementos na lista.
+            - media (float): Média aritmética dos valores.
+            - maior (float or int): O maior valor na lista.
+            - menor (float or int): O menor valor na lista.
+
+    Raises:
+        ValueError: Se a lista de valores estiver vazia.
+
+    Example:
+        >>> calcular_estatisticas([1, 2, 3, 4, 5])
+        (5, 3.0, 5, 1)
+    """
     if not valores:
         raise ValueError("A lista de valores não pode estar vazia.")
 
