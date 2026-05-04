@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yuri - Site daora</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg:      #07080d;
+      --surface: #0e1018;
+      --card:    #12141f;
+      --card2:   #181b28;
+      --a1:      #6ee7f7;
+      --a2:      #b57bee;
+      --a3:      #f7c948;
+      --a4:      #f76e8c;
+      --text:    #dde2f0;
+      --muted:   #555c78;
+      --border:  rgba(110,231,247,.12);
+      --glow-c:  rgba(110,231,247,.18);
+      --radius:  1rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .aurora {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .aurora-1 { width:500px;height:500px;background:radial-gradient(circle,rgba(110,231,247,.12),transparent 70%);top:-180px;left:10%; }
+    .aurora-2 { width:400px;height:400px;background:radial-gradient(circle,rgba(181,123,238,.10),transparent 70%);top:20%;right:-100px;animation-delay:-5s; }
+    .aurora-3 { width:350px;height:350px;background:radial-gradient(circle,rgba(247,201,72,.07),transparent 70%);bottom:-120px;left:30%;animation-delay:-9s; }
+
+    @keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,20px) scale(1.08)} }
+
+    /* HEADER */
+    header { position:relative;z-index:2;padding:3rem 1rem 1.5rem;text-align:center; }
+
+    .pill-tag {
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--a1);background:rgba(110,231,247,.07);border:1px solid rgba(110,231,247,.2);
+      padding:.3rem 1rem;border-radius:999px;margin-bottom:1.2rem;
+    }
+    .pill-tag::before {
+      content:'';width:6px;height:6px;border-radius:50%;
+      background:var(--a1);box-shadow:0 0 8px var(--a1);
+      animation:blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    h1 {
+      font-size:clamp(2rem,6vw,3.6rem);font-weight:800;line-height:1.05;letter-spacing:-.02em;
+      background:linear-gradient(130deg,var(--a1) 0%,var(--a2) 60%,var(--a4) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .sub { font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--muted);margin-top:.6rem;letter-spacing:.08em; }
+
+    /* GLASS CARD */
+    .glass-card {
+      position:relative;z-index:2;
+      background:var(--card);border:1px solid var(--border);border-radius:1.5rem;overflow:hidden;
+      box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 25px 70px rgba(0,0,0,.6),0 0 60px var(--glow-c);
+    }
+    .card-top-bar { height:3px;background:linear-gradient(90deg,var(--a1),var(--a2),var(--a4),transparent); }
+
+    /* WEBCAM */
+    .cam-wrap {
+      position:relative;background:var(--surface);border-radius:var(--radius);
+      aspect-ratio:1/1;overflow:hidden;border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .cam-corner {
+      position:absolute;width:22px;height:22px;
+      border-color:var(--a1);border-style:solid;border-width:0;opacity:.6;z-index:3;
+    }
+    .cam-corner.tl{top:10px;left:10px;border-top-width:2px;border-left-width:2px}
+    .cam-corner.tr{top:10px;right:10px;border-top-width:2px;border-right-width:2px}
+    .cam-corner.bl{bottom:10px;left:10px;border-bottom-width:2px;border-left-width:2px}
+    .cam-corner.br{bottom:10px;right:10px;border-bottom-width:2px;border-right-width:2px}
+
+    .cam-placeholder { text-align:center;color:var(--muted); }
+    .cam-icon { width:56px;height:56px;stroke:var(--muted);opacity:.35;margin-bottom:.75rem; }
+    .cam-placeholder p { font-family:'IBM Plex Mono',monospace;font-size:.7rem; }
+
+    #webcam-container {
+      position:absolute;inset:0;display:none;
+      align-items:center;justify-content:center;
+    }
+    #webcam-container canvas { width:100%!important;height:100%!important;object-fit:cover; }
+
+    .scan-line {
+      display:none;position:absolute;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--a1),transparent);
+      box-shadow:0 0 16px var(--a1);
+      animation:scanMove 2.5s linear infinite;z-index:4;
+    }
+    @keyframes scanMove { 0%{top:0%} 100%{top:100%} }
+
+    /* STATUS */
+    .status {
+      display:inline-flex;align-items:center;gap:.45rem;
+      font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.12em;
+      padding:.28rem .8rem;border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);
+      color:var(--muted);transition:all .4s;
+    }
+    .status-dot { width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .4s; }
+    .status.live { color:var(--a1);border-color:rgba(110,231,247,.25);background:rgba(110,231,247,.06); }
+    .status.live .status-dot { background:var(--a1);box-shadow:0 0 8px var(--a1);animation:blink 1.4s ease-in-out infinite; }
+
+    .sec-label {
+      font-family:'IBM Plex Mono',monospace;font-size:.62rem;
+      letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+    }
+
+    /* BUTTON */
+    .btn-launch {
+      width:100%;padding:.9rem 1.5rem;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      border:none;border-radius:var(--radius);
+      color:#07080d;font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.04em;
+      cursor:pointer;transition:transform .18s,box-shadow .18s,opacity .3s;
+      box-shadow:0 6px 28px rgba(110,231,247,.3);position:relative;overflow:hidden;
+    }
+    .btn-launch::after {
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.15) 50%,transparent 100%);
+      transform:translateX(-100%);transition:transform .5s;
+    }
+    .btn-launch:hover:not(:disabled)::after { transform:translateX(100%); }
+    .btn-launch:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 10px 36px rgba(110,231,247,.4); }
+    .btn-launch:active:not(:disabled) { transform:translateY(0); }
+    .btn-launch:disabled { opacity:.35;cursor:not-allowed; }
+
+    .btn-spinner {
+      display:none;width:18px;height:18px;
+      border:2px solid rgba(0,0,0,.25);border-top-color:#000;
+      border-radius:50%;animation:spin .65s linear infinite;margin:0 auto;
+    }
+    @keyframes spin { to { transform:rotate(360deg) } }
+
+    /* PREDICTION CARDS */
+    #label-container { display:flex;flex-direction:column;gap:.85rem; }
+    #label-container:empty::after {
+      content:'Aguardando predições...';display:block;
+      font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+      color:var(--muted);text-align:center;padding:2.5rem 0;
+    }
+
+    .pred-card {
+      background:var(--card2);border:1px solid rgba(255,255,255,.05);
+      border-radius:.85rem;padding:1rem 1.1rem;transition:border-color .3s,box-shadow .3s;
+    }
+    .pred-card.top {
+      border-color:rgba(110,231,247,.28);
+      box-shadow:0 0 24px rgba(110,231,247,.09);
+    }
+
+    .pred-header {
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem;
+    }
+    .pred-name {
+      font-size:.9rem;font-weight:600;color:var(--text);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:68%;
+    }
+    .pred-pct {
+      font-family:'IBM Plex Mono',monospace;font-size:.88rem;font-weight:600;
+    }
+
+    /* ── range slider ── */
+    .range-wrap { position:relative;padding-bottom:1.1rem; }
+
+    input[type=range] {
+      -webkit-appearance:none;appearance:none;
+      width:100%;height:7px;border-radius:999px;
+      outline:none;cursor:default;pointer-events:none;
+      transition:background .22s;
+    }
+
+    /* webkit thumb */
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none;
+      width:16px;height:16px;border-radius:50%;
+      border:2px solid var(--bg);
+      margin-top:-4.5px;
+      transition:box-shadow .22s,transform .22s;
+    }
+
+    /* moz thumb */
+    input[type=range]::-moz-range-thumb {
+      width:16px;height:16px;border-radius:50%;
+      border:2px solid var(--bg);
+      transition:box-shadow .22s;
+    }
+
+    .conf-row {
+      display:flex;justify-content:space-between;align-items:center;
+      margin-top:.35rem;
+    }
+    .conf-label {
+      font-family:'IBM Plex Mono',monospace;font-size:.55rem;
+      color:var(--muted);letter-spacing:.1em;text-transform:uppercase;
+      transition:color .25s;
+    }
+    .tick-row {
+      display:flex;justify-content:space-between;
+      padding:0 1px;margin-top:.2rem;
+    }
+    .tick {
+      width:1px;height:5px;border-radius:1px;
+      background:rgba(255,255,255,.1);
+    }
+
+    /* FOOTER */
+    footer {
+      position:relative;z-index:2;text-align:center;
+      padding:2.5rem 1rem 3rem;
+      font-family:'IBM Plex Mono',monospace;font-size:.62rem;
+      color:var(--muted);letter-spacing:.12em;
+    }
+    footer a { color:var(--a1);text-decoration:none; }
+    footer a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+
+<div class="aurora aurora-1"></div>
+<div class="aurora aurora-2"></div>
+<div class="aurora aurora-3"></div>
+
+<!-- HEADER -->
+<header class="container-fluid">
+  <div class="pill-tag">IA · Visão Computacional</div>
+  <h1>SITE DAORA</h1>
+  <p class="sub">// classificação de imagem em tempo real</p>
+</header>
+
+<!-- MAIN -->
+<main class="container pb-5" style="position:relative;z-index:2;max-width:980px;">
+  <div class="glass-card">
+    <div class="card-top-bar"></div>
+    <div class="p-3 p-md-4">
+      <div class="row g-4 align-items-start">
+
+        <!-- LEFT: câmera -->
+        <div class="col-12 col-md-6">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="sec-label">Câmera</span>
+            <span class="status" id="status-badge">
+              <span class="status-dot"></span>
+              <span id="status-text">OFFLINE</span>
+            </span>
+          </div>
+
+          <div class="cam-wrap mb-3">
+            <div class="cam-corner tl"></div>
+            <div class="cam-corner tr"></div>
+            <div class="cam-corner bl"></div>
+            <div class="cam-corner br"></div>
+            <div class="scan-line" id="scan-line"></div>
+
+            <div class="cam-placeholder" id="cam-placeholder">
+              <svg class="cam-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23 7l-7 5 7 5V7z" stroke="currentColor"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke="currentColor"/>
+              </svg>
+              <p>Câmera inativa</p>
+              <p style="font-size:.62rem;margin-top:.3rem;opacity:.5">Clique em Iniciar</p>
+            </div>
+
+            <div id="webcam-container"></div>
+          </div>
+
+          <button class="btn-launch" id="btn-start" onclick="init()">
+            <span id="btn-label">▶&ensp;Iniciar Modelo</span>
+            <div class="btn-spinner" id="btn-spinner"></div>
+          </button>
+        </div>
+
+        <!-- RIGHT: predições -->
+        <div class="col-12 col-md-6">
+          <p class="sec-label mb-3">Predições</p>
+          <div id="label-container"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  Powered by&nbsp;
+  <a href="https://teachablemachine.withgoogle.com/" target="_blank">Teachable Machine</a>
+  &nbsp;&amp;&nbsp;
+  <a href="https://www.tensorflow.org/js" target="_blank">TensorFlow.js</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const MODEL_URL = "https://teachablemachine.withgoogle.com/models/IPFaZYJpW0/";
+  let model, webcam, maxPredictions;
+  let started = false;
+
+  const PALETTE = [
+    { color:'#6ee7f7', glow:'rgba(110,231,247,.5)' },
+    { color:'#b57bee', glow:'rgba(181,123,238,.5)' },
+    { color:'#f7c948', glow:'rgba(247,201,72,.5)'  },
+    { color:'#f76e8c', glow:'rgba(247,110,140,.5)' },
+    { color:'#6ef7b5', glow:'rgba(110,247,181,.5)' },
+    { color:'#f79c6e', glow:'rgba(247,156,110,.5)' },
+  ];
+
+  function confLabel(pct) {
+    if (pct >= 80) return 'ALTA ▲';
+    if (pct >= 45) return 'MÉDIA ◆';
+    if (pct >= 15) return 'BAIXA ▼';
+    return 'MÍNIMA ·';
+  }
+
+  /* inject thumb styles per class */
+  function injectThumbStyle(i, p) {
+    const s = document.createElement('style');
+    s.textContent = `
+      #range-${i}::-webkit-slider-thumb { background:${p.color}; box-shadow:0 0 10px ${p.glow}; }
+      #range-${i}::-moz-range-thumb     { background:${p.color}; box-shadow:0 0 10px ${p.glow}; }
+    `;
+    document.head.appendChild(s);
+  }
+
+  function buildTicks(n) {
+    let html = '';
+    for (let t = 0; t < n; t++) html += '<div class="tick"></div>';
+    return html;
+  }
+
+  async function init() {
+    if (started) return;
+    started = true;
+
+    const btn = document.getElementById('btn-start');
+    document.getElementById('btn-label').style.display = 'none';
+    document.getElementById('btn-spinner').style.display = 'block';
+    btn.disabled = true;
+
+    try {
+      model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+      maxPredictions = model.getTotalClasses();
+
+      webcam = new tmImage.Webcam(320, 320, true);
+      await webcam.setup();
+      await webcam.play();
+
+      const wc = document.getElementById('webcam-container');
+      document.getElementById('cam-placeholder').style.display = 'none';
+      wc.style.display = 'flex';
+      wc.appendChild(webcam.canvas);
+
+      document.getElementById('scan-line').style.display = 'block';
+
+      const badge = document.getElementById('status-badge');
+      badge.classList.add('live');
+      document.getElementById('status-text').textContent = 'AO VIVO';
+
+      document.getElementById('btn-spinner').style.display = 'none';
+      document.getElementById('btn-label').style.display = 'block';
+      btn.disabled = true;
+
+      const container = document.getElementById('label-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < maxPredictions; i++) {
+        const p = PALETTE[i % PALETTE.length];
+        container.insertAdjacentHTML('beforeend', `
+          <div class="pred-card" id="pred-${i}">
+            <div class="pred-header">
+              <span class="pred-name" id="name-${i}">—</span>
+              <span class="pred-pct" id="pct-${i}" style="color:${p.color}">0%</span>
+            </div>
+            <div class="range-wrap">
+              <input type="range" id="range-${i}" min="0" max="100" value="0"
+                style="background:linear-gradient(90deg,${p.color} 0%,rgba(255,255,255,.07) 0%)"/>
+              <div class="conf-row">
+                <div class="tick-row">${buildTicks(11)}</div>
+                <span class="conf-label" id="conf-${i}">MÍNIMA ·</span>
+              </div>
+            </div>
+          </div>
+        `);
+        injectThumbStyle(i, p);
+      }
+
+      window.requestAnimationFrame(loop);
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      document.getElementById('btn-spinner').style.display = 'none';
+      const lbl = document.getElementById('btn-label');
+      lbl.textContent = '⚠ Tentar novamente';
+      lbl.style.display = 'block';
+      started = false;
+    }
+  }
+
+  async function loop() {
+    webcam.update();
+    await predict();
+    window.requestAnimationFrame(loop);
+  }
+
+  async function predict() {
+    const prediction = await model.predict(webcam.canvas);
+
+    let topIdx = 0;
+    prediction.forEach((p, i) => {
+      if (p.probability > prediction[topIdx].probability) topIdx = i;
+    });
+
+    for (let i = 0; i < maxPredictions; i++) {
+      const pct      = prediction[i].probability * 100;
+      const pctFixed = pct.toFixed(1);
+      const p        = PALETTE[i % PALETTE.length];
+
+      document.getElementById(`name-${i}`).textContent = prediction[i].className;
+      document.getElementById(`pct-${i}`).textContent  = pctFixed + '%';
+      document.getElementById(`conf-${i}`).textContent = confLabel(pct);
+
+      const range = document.getElementById(`range-${i}`);
+      range.value = pctFixed;
+      range.style.background =
+        `linear-gradient(90deg, ${p.color} ${pctFixed}%, rgba(255,255,255,.07) ${pctFixed}%)`;
+
+      document.getElementById(`pred-${i}`).classList.toggle('top', i === topIdx);
+    }
+  }
+</script>
+</body>
+</html>
