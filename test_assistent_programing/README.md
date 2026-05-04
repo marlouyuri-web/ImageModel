@@ -4,13 +4,12 @@ Este repositório contém uma coleção de scripts Python desenvolvidos como exe
 
 ## Estrutura de Arquivos
 
-- `num_primo.py`: Script para verificar se um número é primo. Inclui docstring detalhada no estilo Google.
+- `num_primos.py`: Script para verificar se um número é primo. Inclui docstring detalhada no estilo Google.
 - `refatoracao.py`: Script para calcular estatísticas básicas (total, média, maior e menor) de uma lista de valores. Inclui docstring detalhada.
-- `pratica_debug_corrigido.py`: Script para calcular a média de notas inseridas pelo usuário, com tratamento de erros e comentários inline explicativos.
+- `debug.py`: Script para calcular a média de notas inseridas pelo usuário, com tratamento de erros e comentários inline explicativos.
 - `explicacao_num_primo.md`: Explicação sobre o conceito de números primos e o algoritmo usado.
 - `explicacao_refatoracao.md`: Explicação sobre refatoração de código e boas práticas.
-- `explicacao_num_primo.md`: (Nota: Parece haver duplicação; este arquivo também explica números primos.)
-- `pratica_debug_erros.md`: Documento sobre práticas de depuração e correção de erros.
+- `explicacao_debug.md`: Documento sobre práticas de depuração e correção de erros.
 - `README.md`: Este arquivo, descrevendo o projeto.
 
 ## Como Executar os Scripts
@@ -18,9 +17,9 @@ Este repositório contém uma coleção de scripts Python desenvolvidos como exe
 ### Pré-requisitos
 - Python 3.x instalado no sistema.
 
-### Executando num_primo.py
+### Executando num_primos.py
 1. Abra um terminal no diretório do projeto.
-2. Execute: `python num_primo.py`
+2. Execute: `python num_primos.py`
 3. Digite um número quando solicitado e pressione Enter. O script informará se o número é primo.
 
 ### Executando refatoracao.py
@@ -28,9 +27,9 @@ Este repositório contém uma coleção de scripts Python desenvolvidos como exe
 2. Execute: `python refatoracao.py`
 3. O script calculará e exibirá as estatísticas de uma lista pré-definida de números.
 
-### Executando pratica_debug_corrigido.py
+### Executando debug.py
 1. Abra um terminal no diretório do projeto.
-2. Execute: `python pratica_debug_corrigido.py`
+2. Execute: `python debug.py`
 3. Digite as notas separadas por vírgula (ex: 10, 8, 9) e pressione Enter. O script calculará e exibirá a média.
 
 ## Tecnologias e Ferramentas Utilizadas
